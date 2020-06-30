@@ -10,8 +10,12 @@ df = pd.read_csv(r'C:\Users\info\Downloads\therapists.csv', skiprows=1, skipfoot
 df = df.dropna(subset=['Insurance Expiry Date', 'First Aid Expiry Date', 'Police Check Expiry', 'Membership Expiry'])
 df = df[~df['Client Type'].str.match('Expired')]
 df = df[~df['Client Type'].str.match('Unavailable')]
-state = 'VIC'
+#Change Mobile column to international number
+df['Mobile'] = df['Mobile'].str.replace('04', '+614', 1)
+df['Mobile'] = df['Mobile'].str.replace(' ', '')
 
+print('Please input a State')
+state = input()
 print('Please input an address')
 dest = input()
 #drop rows that don't match the state of new client

@@ -5,7 +5,7 @@ from tkinter import ttk
 import pandas as pd
 import googlemaps
 
-api_key = ''
+api_key = 'AIzaSyAbRYyx5buQlljdbL0iMG9IlAQ4aboAX6M'
 gmaps = googlemaps.Client(key=api_key)
    
 root=tk.Tk() 
@@ -82,7 +82,7 @@ def find_contractor():
     match['duration'] = dur
     #Convert format to mins
     match['Minutes'] = pd.eval(match['duration'].replace(['hours?', 'mins', 'min','Minutes'], ['*60+', '', '', ''], regex=True)).astype(int)
-    match.sort_values(by=['Minutes'])
+    match = match.sort_values(by=['Minutes'])
     print(match[['First Name-', 'duration', 'distance', 'Minutes']])
     best_fit = match.nsmallest(4, 'Minutes')
     print('--------------------------')
@@ -122,7 +122,7 @@ Button1 = tk.Checkbutton(root, text = 'Female Only', variable =checkbutton1,
 Button2 = tk.Checkbutton(root, text = 'Male Only', variable =checkbutton2,
                       onvalue=1, offvalue=0, height=2,width=10).place(x=250, y=110)
 #Create TreeView
-treev = ttk.Treeview(root, selectmode='browse')
+treev = ttk.Treeview(root, selectmode='extended')
 treev.place(x=30, y=210)
 verscrlbar = ttk.Scrollbar(root, orient='vertical', command=treev.yview)
 verscrlbar.pack(side='right', fill='x')
@@ -154,6 +154,10 @@ def insert_data():
                      values=(match['First Name-'][x], match['Client Type'][x], match['duration'][x], \
                              match['distance'][x], match['Minutes'][x]))
         i = i+1
+        treev.bind('<Button-1>', OnSelect)
+def OnSelect(event):
+##    item = treev.selection()[0]
+    print("you clicked on", treev.selection())
 
    
 root.mainloop() 

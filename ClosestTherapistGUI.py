@@ -5,7 +5,7 @@ from tkinter import ttk
 import pandas as pd
 import googlemaps
 
-api_key = 'AIzaSyAbRYyx5buQlljdbL0iMG9IlAQ4aboAX6M'
+api_key = ''
 gmaps = googlemaps.Client(key=api_key)
    
 root=tk.Tk() 

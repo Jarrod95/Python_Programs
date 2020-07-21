@@ -4,6 +4,7 @@ import tkinter as tk
 from tkinter import ttk
 import pandas as pd
 import googlemaps
+import time
 
 api_key = ''
 gmaps = googlemaps.Client(key=api_key)
@@ -47,6 +48,11 @@ def submit():
     name_var.set("") 
     passw_var.set("")
     find_contractor()
+def message():
+    print('selected items: ')
+    for item in treev.selection():
+        item_text = treev.item(item, "text")
+        print(item_text)
 def find_contractor():
     global match, best_fit
     # Get contractor data 
@@ -115,6 +121,8 @@ passw_entry=tk.Entry(root, width=45,
 # Button that will call the submit function  
 sub_btn=tk.Button(root,text = 'Submit', 
                   command = submit).place(x=200,y=170)
+message_btn=tk.Button(root,text = 'Message', 
+                  command = message).place(x=200,y=450)
 
 #Creating check buttons
 Button1 = tk.Checkbutton(root, text = 'Female Only', variable =checkbutton1,
@@ -129,6 +137,8 @@ verscrlbar.pack(side='right', fill='x')
 treev.configure(xscrollcommand = verscrlbar.set)
 treev['columns'] = ('1','2','3', '4', '5')
 treev['show'] = 'headings'
+progress = ttk.Progressbar(root, orient = "horizontal", 
+              length = 100, mode = 'determinate') 
 #Add columns
 treev.column('1', width=90, anchor='c')
 treev.column('2', width=90, anchor='se')
@@ -142,11 +152,6 @@ treev.heading('3', text = 'Duration')
 treev.heading('4', text = 'Distance')
 treev.heading('5', text = 'Minutes')
 
-#insert values
-##treev.insert("", 'end', text ="L1",  
-##             values =("Nidhi", "F", "25")) 
-##treev.insert("", 'end', text ="L2", 
-##             values =("Nisha", "F", "23"))
 def insert_data():
     i = 0
     for x in match.index:
@@ -159,5 +164,30 @@ def OnSelect(event):
 ##    item = treev.selection()[0]
     print("you clicked on", treev.selection())
 
-   
+#insert progress bar
+def bar():
+    progress['value'] = 20
+    treev.update_idletasks()
+    time.sleep(1)
+
+    progress['value'] = 40
+    treev.update_idletasks() 
+    time.sleep(1) 
+  
+    progress['value'] = 50
+    treev.update_idletasks() 
+    time.sleep(1) 
+  
+    progress['value'] = 60
+    treev.update_idletasks() 
+    time.sleep(1) 
+  
+    progress['value'] = 80
+    treev.update_idletasks() 
+    time.sleep(1) 
+    progress['value'] = 100
+  
+progress.pack(pady = 145) 
+  
+    
 root.mainloop() 

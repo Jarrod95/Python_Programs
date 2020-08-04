@@ -5,8 +5,9 @@ from tkinter import ttk
 import pandas as pd
 import googlemaps
 import time
+import testMessage
+from secrets import api_key
 
-api_key = ''
 gmaps = googlemaps.Client(key=api_key)
    
 root=tk.Tk() 
@@ -21,42 +22,65 @@ name_var=tk.StringVar()
 passw_var=tk.StringVar() 
 checkbutton1 = tk.IntVar()
 checkbutton2 = tk.IntVar()
-   
+checkbutton3 = tk.IntVar()
+checkbutton4 = tk.IntVar()
+checkbutton5 = tk.IntVar()
+
+#insert progress bar
+def bar():
+    progress['value'] = 20
+    treev.update_idletasks()
+    time.sleep(1)
+
+    progress['value'] = 40
+    treev.update_idletasks() 
+    time.sleep(1) 
+  
+    progress['value'] = 50
+    treev.update_idletasks() 
+    time.sleep(1) 
+  
+    progress['value'] = 60
+    treev.update_idletasks() 
+    time.sleep(1) 
+  
+    progress['value'] = 80
+    treev.update_idletasks() 
+    time.sleep(1) 
+    progress['value'] = 100   
 # defining a function that will 
 # get the name and password and  
 # print them on the screen 
 def submit():
-    global name, dest, female_only, male_only, state
+    global name, dest, female_only, male_only, state, address, inital, weekly, monthly
+    bar()
     name=name_var.get() 
     dest=passw_var.get()
     female_only = checkbutton1.get()
     male_only = checkbutton2.get()
-
+    initial = checkbutton3.get()
+    weekly = checkbutton4.get()
+    monthly = checkbutton5.get()
+    
     # Retrieve state from address
     address = dest.split(' ')
     states = ['NSW', 'QLD', 'WA', 'VIC', 'TAS', 'SA', 'NT', 'ACT']
-    state = test2 = [s for s in address if any(xs in s for xs in states)][0]
-##    print("The name is : " + name) 
-##    print("The address is : " + dest)
-##    print("The state is: " + state)
-##    print("Female Only: ", female_only == 1)
-##    print("Male Only: ",  male_only == 1)
-    #Print results to text box??
-##    w = tk.Text(root, height=1, borderwidth=0)
-##    w.insert(1.0, state)
-##    w.place(x=200,y=220)
+    state = [s for s in address if any(xs in s for xs in states)][0]
     name_var.set("") 
     passw_var.set("")
     find_contractor()
 def message():
-    print('selected items: ')
+    global message
+    message = f"Hi {cont['values'][0]}, we have a new client {name} in {address[-3].strip(',')} \
+looking for FN appts. She is avail Mon - AM, Tues - PM, Wed - AM. Pls respond with avail. Thanks - M2M"
+    testMessage()
     for item in treev.selection():
         item_text = treev.item(item, "text")
         print(item_text)
 def find_contractor():
     global match, best_fit
     # Get contractor data 
-    df = pd.read_csv(r'C:\Users\info\Downloads\therapists.csv', skiprows=1, skipfooter=3)
+    df = pd.read_csv(r'C:\Users\info\Downloads\therapists.csv', skiprows=1, skipfooter=3, engine='python')
 
     #Drop everyone expired or unavail
     df = df.dropna(subset=['Insurance Expiry Date', 'First Aid Expiry Date', 'Police Check Expiry', 'Membership Expiry'])
@@ -115,7 +139,18 @@ passw_label = tk.Label(root,
 # creating a entry for password 
 passw_entry=tk.Entry(root, width=45,
                      textvariable = passw_var, 
-                     font = ('calibre',10,'normal')).place(x=150, y=90) 
+                     font = ('calibre',10,'normal')).place(x=150, y=90)
+# creating a label for frequency 
+freq_label = tk.Label(root, 
+                       text = 'Frequency', 
+                       font = ('calibre',10,'bold')).place(x=30, y=150)
+#Frequency Buttons
+Button3 = tk.Checkbutton(root, text = 'I', variable =checkbutton3,
+                      onvalue=1, offvalue=0, height=2,width=10).place(x=120, y=140)
+Button4 = tk.Checkbutton(root, text = 'W', variable =checkbutton4,
+                      onvalue=1, offvalue=0, height=2,width=10).place(x=180, y=140)
+Button4 = tk.Checkbutton(root, text = 'M', variable =checkbutton5,
+                      onvalue=1, offvalue=0, height=2,width=10).place(x=260, y=140)
    
 # creating a button using the widget  
 # Button that will call the submit function  
@@ -161,33 +196,15 @@ def insert_data():
         i = i+1
         treev.bind('<Button-1>', OnSelect)
 def OnSelect(event):
-##    item = treev.selection()[0]
+    global curItem, cont, number
+    curItem = treev.focus()
+    print(treev.item(curItem))
+    cont = treev.item(curItem)
+    number = match[match['First Name-'].str.contains(cont['values'][0])]['Mobile'].values[0]
     print("you clicked on", treev.selection())
 
-#insert progress bar
-def bar():
-    progress['value'] = 20
-    treev.update_idletasks()
-    time.sleep(1)
-
-    progress['value'] = 40
-    treev.update_idletasks() 
-    time.sleep(1) 
   
-    progress['value'] = 50
-    treev.update_idletasks() 
-    time.sleep(1) 
-  
-    progress['value'] = 60
-    treev.update_idletasks() 
-    time.sleep(1) 
-  
-    progress['value'] = 80
-    treev.update_idletasks() 
-    time.sleep(1) 
-    progress['value'] = 100
-  
-progress.pack(pady = 145) 
+progress.pack(pady = 500) 
   
     
 root.mainloop() 
